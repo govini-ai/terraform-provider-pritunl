@@ -1,0 +1,8 @@
+terraform-provider-pritunl
+dist/
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+*.tfvars
+crash.log
