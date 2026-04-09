@@ -26,6 +26,7 @@ data "pritunl_server" "production" {
 ### Read-Only
 
 - `network` (String) VPN network CIDR.
+- `ipv6` (Boolean) IPv6 enabled.
 - `port` (Number) Server port.
 - `protocol` (String) Protocol (`udp` or `tcp`).
 - `cipher` (String) Encryption cipher.

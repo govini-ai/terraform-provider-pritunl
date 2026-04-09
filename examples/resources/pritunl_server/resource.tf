@@ -4,6 +4,7 @@ resource "pritunl_server" "production" {
   network  = "10.10.0.0/24"
   port     = 1194
   protocol = "udp"
+  ipv6     = true 
 
   # Attach organizations to this server
   attached_organization_ids = [

@@ -4,7 +4,7 @@ HOSTNAME=registry.terraform.io
 NAMESPACE=govini-ai
 NAME=pritunl
 BINARY=terraform-provider-${NAME}
-VERSION=0.2.0
+VERSION=0.2.2
 OS_ARCH=$(shell go env GOOS)_$(shell go env GOARCH)
 
 build:

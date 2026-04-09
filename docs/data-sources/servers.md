@@ -22,6 +22,7 @@ data "pritunl_servers" "all" {}
   - `id` (String) Server ID.
   - `name` (String) Server name.
   - `network` (String) VPN network CIDR.
+  - `ipv6` (Boolean) IPv6 enabled.
   - `port` (Number) Server port.
   - `protocol` (String) Protocol (`udp` or `tcp`).
   - `cipher` (String) Encryption cipher.

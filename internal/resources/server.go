@@ -35,6 +35,7 @@ type ServerResourceModel struct {
 	ID                      types.String `tfsdk:"id"`
 	Name                    types.String `tfsdk:"name"`
 	Network                 types.String `tfsdk:"network"`
+	IPv6					types.Bool 	 `tfsdk:"ipv6"`
 	Port                    types.Int64  `tfsdk:"port"`
 	Protocol                types.String `tfsdk:"protocol"`
 	Cipher                  types.String `tfsdk:"cipher"`
@@ -68,6 +69,10 @@ func (r *ServerResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			"network": schema.StringAttribute{
 				Description: "VPN network CIDR.",
 				Required:    true,
+			},
+			"ipv6": schema.BoolAttribute{
+				Description: "IPv6 Enabled.",
+				Required: 	 true,
 			},
 			"port": schema.Int64Attribute{
 				Description: "Server port.",
@@ -390,6 +395,7 @@ func (r *ServerResource) ImportState(ctx context.Context, req resource.ImportSta
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), server.ID)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("name"), server.Name)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("network"), server.Network)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("ipv6"), server.IPv6)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("port"), server.Port)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("protocol"), server.Protocol)...)
 	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("cipher"), server.Cipher)...)
