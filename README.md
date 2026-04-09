@@ -69,6 +69,7 @@ resource "pritunl_server" "vpn" {
   network  = "10.10.0.0/24"
   port     = 1194
   protocol = "udp"
+  ipv6     = true
 
   attached_organization_ids = [pritunl_organization.engineering.id]
 }
