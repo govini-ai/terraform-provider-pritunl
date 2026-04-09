@@ -35,7 +35,7 @@ type ServerResourceModel struct {
 	ID                      types.String `tfsdk:"id"`
 	Name                    types.String `tfsdk:"name"`
 	Network                 types.String `tfsdk:"network"`
-	IPv6					types.Bool 	 `tfsdk:"ipv6"`
+	IPv6                    types.Bool   `tfsdk:"ipv6"`
 	Port                    types.Int64  `tfsdk:"port"`
 	Protocol                types.String `tfsdk:"protocol"`
 	Cipher                  types.String `tfsdk:"cipher"`
@@ -72,7 +72,7 @@ func (r *ServerResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			},
 			"ipv6": schema.BoolAttribute{
 				Description: "IPv6 Enabled.",
-				Required: 	 true,
+				Required:    true,
 			},
 			"port": schema.Int64Attribute{
 				Description: "Server port.",
@@ -155,6 +155,7 @@ func (r *ServerResource) Create(ctx context.Context, req resource.CreateRequest,
 	server := &client.Server{
 		Name:         data.Name.ValueString(),
 		Network:      data.Network.ValueString(),
+		IPv6:         data.IPv6.ValueBool(),
 		Port:         int(data.Port.ValueInt64()),
 		Protocol:     data.Protocol.ValueString(),
 		Cipher:       data.Cipher.ValueString(),
@@ -175,6 +176,7 @@ func (r *ServerResource) Create(ctx context.Context, req resource.CreateRequest,
 	data.ID = types.StringValue(created.ID)
 	data.Name = types.StringValue(created.Name)
 	data.Network = types.StringValue(created.Network)
+	data.IPv6 = types.BoolValue(created.IPv6)
 	data.Port = types.Int64Value(int64(created.Port))
 	data.Protocol = types.StringValue(created.Protocol)
 	data.Cipher = types.StringValue(created.Cipher)
@@ -227,6 +229,7 @@ func (r *ServerResource) Read(ctx context.Context, req resource.ReadRequest, res
 	data.ID = types.StringValue(server.ID)
 	data.Name = types.StringValue(server.Name)
 	data.Network = types.StringValue(server.Network)
+	data.IPv6 = types.BoolValue(server.IPv6)
 	data.Port = types.Int64Value(int64(server.Port))
 	data.Protocol = types.StringValue(server.Protocol)
 	data.Cipher = types.StringValue(server.Cipher)
@@ -274,6 +277,7 @@ func (r *ServerResource) Update(ctx context.Context, req resource.UpdateRequest,
 	server := &client.Server{
 		Name:         data.Name.ValueString(),
 		Network:      data.Network.ValueString(),
+		IPv6:         data.IPv6.ValueBool(),
 		Port:         int(data.Port.ValueInt64()),
 		Protocol:     data.Protocol.ValueString(),
 		Cipher:       data.Cipher.ValueString(),
@@ -353,6 +357,7 @@ func (r *ServerResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	data.Name = types.StringValue(updated.Name)
 	data.Network = types.StringValue(updated.Network)
+	data.IPv6 = types.BoolValue(updated.IPv6)
 	data.Port = types.Int64Value(int64(updated.Port))
 	data.Protocol = types.StringValue(updated.Protocol)
 	data.Cipher = types.StringValue(updated.Cipher)
