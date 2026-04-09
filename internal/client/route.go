@@ -7,18 +7,18 @@ import (
 
 // Route represents a route on a Pritunl server
 type Route struct {
-	ID          string `json:"id,omitempty"`
-	Network     string `json:"network"`
-	Comment     string `json:"comment,omitempty"`
-	Metric      int    `json:"metric,omitempty"`
-	Nat         bool   `json:"nat,omitempty"`
+	ID           string `json:"id,omitempty"`
+	Network      string `json:"network"`
+	Comment      string `json:"comment,omitempty"`
+	Metric       int    `json:"metric,omitempty"`
+	Nat          bool   `json:"nat,omitempty"`
 	NatInterface string `json:"nat_interface,omitempty"`
-	NatNetmap   string `json:"nat_netmap,omitempty"`
-	Advertise   bool   `json:"advertise,omitempty"`
-	VpcRegion   string `json:"vpc_region,omitempty"`
-	VpcID       string `json:"vpc_id,omitempty"`
-	NetGateway  bool   `json:"net_gateway,omitempty"`
-	Server      string `json:"server,omitempty"`
+	NatNetmap    string `json:"nat_netmap,omitempty"`
+	Advertise    bool   `json:"advertise,omitempty"`
+	VpcRegion    string `json:"vpc_region,omitempty"`
+	VpcID        string `json:"vpc_id,omitempty"`
+	NetGateway   bool   `json:"net_gateway,omitempty"`
+	Server       string `json:"server,omitempty"`
 }
 
 // ListRoutes returns all routes for a server

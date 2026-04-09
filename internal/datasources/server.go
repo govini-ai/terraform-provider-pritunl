@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/govini-ai/terraform-provider-pritunl/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/govini-ai/terraform-provider-pritunl/internal/client"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -27,6 +27,7 @@ type ServerDataSourceModel struct {
 	ID           types.String `tfsdk:"id"`
 	Name         types.String `tfsdk:"name"`
 	Network      types.String `tfsdk:"network"`
+	IPv6         types.Bool   `tfsdk:"ipv6"`
 	Port         types.Int64  `tfsdk:"port"`
 	Protocol     types.String `tfsdk:"protocol"`
 	Cipher       types.String `tfsdk:"cipher"`
@@ -57,6 +58,10 @@ func (d *ServerDataSource) Schema(ctx context.Context, req datasource.SchemaRequ
 			},
 			"network": schema.StringAttribute{
 				Description: "VPN network CIDR.",
+				Computed:    true,
+			},
+			"ipv6": schema.BoolAttribute{
+				Description: "IPv6 enabled.",
 				Computed:    true,
 			},
 			"port": schema.Int64Attribute{
@@ -143,6 +148,7 @@ func (d *ServerDataSource) Read(ctx context.Context, req datasource.ReadRequest,
 	data.ID = types.StringValue(server.ID)
 	data.Name = types.StringValue(server.Name)
 	data.Network = types.StringValue(server.Network)
+	data.IPv6 = types.BoolValue(server.IPv6)
 	data.Port = types.Int64Value(int64(server.Port))
 	data.Protocol = types.StringValue(server.Protocol)
 	data.Cipher = types.StringValue(server.Cipher)

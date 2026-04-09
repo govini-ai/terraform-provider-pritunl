@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/govini-ai/terraform-provider-pritunl/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -14,7 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
-	"github.com/govini-ai/terraform-provider-pritunl/internal/client"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
