@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/govini-ai/terraform-provider-pritunl/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/datasource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/govini-ai/terraform-provider-pritunl/internal/client"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
