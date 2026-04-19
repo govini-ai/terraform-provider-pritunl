@@ -148,6 +148,16 @@ func (r *RouteResource) Read(ctx context.Context, req resource.ReadRequest, resp
 
 	route, err := r.client.GetRoute(data.ServerID.ValueString(), data.ID.ValueString())
 	if err != nil {
+		// Check if route was not found (drift detected)
+		if strings.Contains(err.Error(), "not found") {
+			tflog.Warn(ctx, "Route not found, removing from state", map[string]interface{}{
+				"server_id": data.ServerID.ValueString(),
+				"route_id":  data.ID.ValueString(),
+			})
+			// Remove resource from state by not setting it
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read route: %s", err))
 		return
 	}
