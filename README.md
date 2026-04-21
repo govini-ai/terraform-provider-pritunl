@@ -17,7 +17,7 @@ terraform {
 }
 ```
 
-Then run `terraform init`.
+Then run `terraform init`. _Note: a fully-qualified source may be necessary to trigger a correct search for upgrades i.e. `registry.terraform.io/govini-ai/pritunl`_.
 
 ## Configuration
 

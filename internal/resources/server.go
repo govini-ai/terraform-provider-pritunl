@@ -68,7 +68,8 @@ func (r *ServerResource) Schema(ctx context.Context, req resource.SchemaRequest,
 			},
 			"network": schema.StringAttribute{
 				Description: "VPN network CIDR.",
-				Required:    true,
+				Optional:    true,
+				Computed:    true,
 			},
 			"ipv6": schema.BoolAttribute{
 				Description: "IPv6 Enabled.",
