@@ -71,6 +71,9 @@ func (r *ServerResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Description: "VPN network CIDR.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					stringplanmodifier.UseStateForUnknown(),
+				},
 			},
 			"ipv6": schema.BoolAttribute{
 				Description: "IPv6 Enabled.",
@@ -156,7 +159,6 @@ func (r *ServerResource) Create(ctx context.Context, req resource.CreateRequest,
 
 	server := &client.Server{
 		Name:         data.Name.ValueString(),
-		Network:      data.Network.ValueString(),
 		IPv6:         data.IPv6.ValueBool(),
 		Port:         int(data.Port.ValueInt64()),
 		Protocol:     data.Protocol.ValueString(),
@@ -165,6 +167,11 @@ func (r *ServerResource) Create(ctx context.Context, req resource.CreateRequest,
 		InterClient:  data.InterClient.ValueBool(),
 		PingInterval: int(data.PingInterval.ValueInt64()),
 		PingTimeout:  int(data.PingTimeout.ValueInt64()),
+	}
+
+	// Only set network if explicitly provided
+	if !data.Network.IsNull() && !data.Network.IsUnknown() && data.Network.ValueString() != "" {
+		server.Network = data.Network.ValueString()
 	}
 
 	tflog.Debug(ctx, "Creating server", map[string]interface{}{"name": server.Name})
