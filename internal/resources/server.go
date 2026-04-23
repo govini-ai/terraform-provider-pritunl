@@ -3,6 +3,7 @@ package resources
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/govini-ai/terraform-provider-pritunl/internal/client"
 	"github.com/hashicorp/terraform-plugin-framework/path"
@@ -223,6 +224,15 @@ func (r *ServerResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	server, err := r.client.GetServer(data.ID.ValueString())
 	if err != nil {
+		// Check if server was not found (drift detected)
+		if strings.Contains(err.Error(), "not found") || strings.Contains(err.Error(), "500") {
+			tflog.Warn(ctx, "Server not found, removing from state", map[string]interface{}{
+				"server_id": data.ID.ValueString(),
+			})
+			// Remove resource from state by not setting it
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError("Client Error", fmt.Sprintf("Unable to read server: %s", err))
 		return
 	}
