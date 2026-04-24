@@ -157,8 +157,8 @@ func (r *ServerResource) ModifyPlan(ctx context.Context, req resource.ModifyPlan
 		return
 	}
 
-	// If network is not in config (null), mark it as computed
-	if config.Network.IsNull() {
+	// If network is not in config (null or empty string), mark it as computed
+	if config.Network.IsNull() || config.Network.ValueString() == "" {
 		if req.State.Raw.IsNull() {
 			// Creating: mark as unknown so API can set it
 			plan.Network = types.StringUnknown()
