@@ -18,10 +18,34 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
+// emptyStringAsUnknown returns a plan modifier that sets empty strings to unknown
+type emptyStringAsUnknown struct{}
+
+func (m emptyStringAsUnknown) Description(ctx context.Context) string {
+	return "If value is empty string, set to unknown"
+}
+
+func (m emptyStringAsUnknown) MarkdownDescription(ctx context.Context) string {
+	return "If value is empty string, set to unknown"
+}
+
+func (m emptyStringAsUnknown) PlanModifyString(ctx context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	if req.ConfigValue.IsNull() {
+		return
+	}
+
+	if req.ConfigValue.ValueString() == "" {
+		if req.StateValue.IsNull() {
+			resp.PlanValue = types.StringUnknown()
+		} else {
+			resp.PlanValue = req.StateValue
+		}
+	}
+}
+
 // Ensure provider defined types fully satisfy framework interfaces.
 var _ resource.Resource = &ServerResource{}
 var _ resource.ResourceWithImportState = &ServerResource{}
-var _ resource.ResourceWithModifyPlan = &ServerResource{}
 
 func NewServerResource() resource.Resource {
 	return &ServerResource{}
@@ -72,6 +96,9 @@ func (r *ServerResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Description: "VPN network CIDR.",
 				Optional:    true,
 				Computed:    true,
+				PlanModifiers: []planmodifier.String{
+					emptyStringAsUnknown{},
+				},
 			},
 			"ipv6": schema.BoolAttribute{
 				Description: "IPv6 Enabled.",
