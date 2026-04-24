@@ -21,6 +21,7 @@ import (
 // Ensure provider defined types fully satisfy framework interfaces.
 var _ resource.Resource = &ServerResource{}
 var _ resource.ResourceWithImportState = &ServerResource{}
+var _ resource.ResourceWithModifyPlan = &ServerResource{}
 
 func NewServerResource() resource.Resource {
 	return &ServerResource{}
@@ -71,9 +72,6 @@ func (r *ServerResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Description: "VPN network CIDR.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					stringplanmodifier.UseStateForUnknown(),
-				},
 			},
 			"ipv6": schema.BoolAttribute{
 				Description: "IPv6 Enabled.",
@@ -147,6 +145,35 @@ func (r *ServerResource) Configure(ctx context.Context, req resource.ConfigureRe
 	}
 
 	r.client = client
+}
+
+func (r *ServerResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	var plan ServerResourceModel
+	var config ServerResourceModel
+
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.Get(ctx, &config)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// If network is not in config (null), mark it as computed
+	if config.Network.IsNull() {
+		if req.State.Raw.IsNull() {
+			// Creating: mark as unknown so API can set it
+			plan.Network = types.StringUnknown()
+		} else {
+			// Updating: get state value and preserve it
+			var state ServerResourceModel
+			resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			// Keep whatever is in state (don't manage network when not in config)
+			plan.Network = state.Network
+		}
+		resp.Diagnostics.Append(resp.Plan.Set(ctx, &plan)...)
+	}
 }
 
 func (r *ServerResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
