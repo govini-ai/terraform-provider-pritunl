@@ -96,9 +96,6 @@ func (r *ServerResource) Schema(ctx context.Context, req resource.SchemaRequest,
 				Description: "VPN network CIDR.",
 				Optional:    true,
 				Computed:    true,
-				PlanModifiers: []planmodifier.String{
-					emptyStringAsUnknown{},
-				},
 			},
 			"ipv6": schema.BoolAttribute{
 				Description: "IPv6 Enabled.",
@@ -280,6 +277,12 @@ func (r *ServerResource) Read(ctx context.Context, req resource.ReadRequest, res
 
 	resp.Diagnostics.Append(req.State.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
+		// If state cannot be deserialized (e.g., due to schema changes), remove from state
+		tflog.Warn(ctx, "Unable to deserialize state, removing resource from state", map[string]interface{}{
+			"error": resp.Diagnostics.Errors(),
+		})
+		resp.State.RemoveResource(ctx)
+		resp.Diagnostics = nil // Clear the error since we handled it
 		return
 	}
 
