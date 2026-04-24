@@ -294,7 +294,6 @@ func (r *ServerResource) Update(ctx context.Context, req resource.UpdateRequest,
 
 	server := &client.Server{
 		Name:         data.Name.ValueString(),
-		Network:      data.Network.ValueString(),
 		IPv6:         data.IPv6.ValueBool(),
 		Port:         int(data.Port.ValueInt64()),
 		Protocol:     data.Protocol.ValueString(),
@@ -303,6 +302,10 @@ func (r *ServerResource) Update(ctx context.Context, req resource.UpdateRequest,
 		InterClient:  data.InterClient.ValueBool(),
 		PingInterval: int(data.PingInterval.ValueInt64()),
 		PingTimeout:  int(data.PingTimeout.ValueInt64()),
+	}
+
+	if !data.Network.IsNull() && !data.Network.IsUnknown() && data.Network.ValueString() != "" {
+		server.Network = data.Network.ValueString()
 	}
 
 	tflog.Debug(ctx, "Updating server", map[string]interface{}{"id": data.ID.ValueString(), "name": server.Name})
